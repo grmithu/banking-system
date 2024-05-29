@@ -17,10 +17,11 @@ class Transaction extends Model
         'fee',
     ];
 
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
+
 
 }

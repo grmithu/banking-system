@@ -62,13 +62,16 @@ class BankingController extends Controller
         $fee = $this->calculateFee($amount);
         $totalAmount = $amount + $fee;
 
+
         if ($totalAmount > $user->balance) {
-            return redirect()->back()->with('error', 'Insufficient balance.');
+            return redirect()->back()->with('error', 'Insufficient balance Ac.');
         }
 
+
         if ($this->exceedsDailyLimit($user, $amount)) {
-            return redirect()->back()->with('error', 'Daily withdrawal limit exceeded.');
+            return redirect()->back()->with('error', 'Your Daily withdrawal limit exceeded.');
         }
+
 
         $monthlyWithdrawals = $this->getMonthlyWithdrawals($user);
         if ($monthlyWithdrawals >= 3) {
@@ -79,8 +82,10 @@ class BankingController extends Controller
             }
         }
 
+
         $user->balance -= $totalAmount;
         $user->save();
+
 
         Transaction::create([
             'user_id' => $user->id,
@@ -89,8 +94,10 @@ class BankingController extends Controller
             'fee' => $fee,
         ]);
 
+
         return redirect()->back()->with('success', 'Withdrawal successful!');
     }
+
 
     private function calculateFee($amount)
     {
@@ -105,6 +112,7 @@ class BankingController extends Controller
         }
     }
 
+
     private function exceedsDailyLimit($user, $amount)
     {
         $dailyWithdrawals = $user->transactions()
@@ -115,6 +123,7 @@ class BankingController extends Controller
         return ($dailyWithdrawals + $amount) > 3000;
     }
 
+
     private function getMonthlyWithdrawals($user)
     {
         return $user->transactions()
@@ -122,9 +131,6 @@ class BankingController extends Controller
             ->whereMonth('created_at', now()->month)
             ->count();
     }
-
-
-
 
 
 
